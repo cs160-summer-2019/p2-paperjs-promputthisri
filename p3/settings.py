@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'dt)!z4cwnj8#4e&rr94$k1s6^^(t*%@$2$)jt*hs&7^at-%72$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['p2-paperjs-promputthisri-promputthisri499532.codeanyapp.com']
 

@@ -59,13 +59,25 @@
 			// you may also add code outside of the function (e.g., global variables)
 			function myGradientInteraction(){
 				var tool = new paper.Tool();
-
-				tool.onMouseDown = function (event) {
-
+        var start;
+        //strait from Paper.js website tutorial on predefine object//
+        var rectangle = new paper.Rectangle(new Point(view.center.x - 100, view.center.y - 50), new Size(200, 100));
+        var path = new paper.Path.Rectangle(rectangle);
+        path.fillColor = 'red';
+        path.selected = true;
+        console.log('myGradientInteraction');
+				tool.onMouseDown = function(event) {
+          start = event.point;
 				}
 
-				tool.onMouseUp = function (event) {
-					
+				tool.onMouseUp = function(event) {
+          console.log([cp.history[cp.history.length-2], cp.history[cp.history.length-1]]);
+          path.fillColor = {
+            gradient: {
+              stops: [cp.history[cp.history.length-2], cp.history[cp.history.length-1]] },
+            origin: start,
+            destination: event.point
+          };
 				}
 			}
 
@@ -111,6 +123,7 @@
 			}
 
 			function init(custom){
+        paper.install(window);
 				paper.setup(canvas);
 				getColorsCreatePalette();
 
@@ -128,9 +141,9 @@
 			}
 
 			// To see your myGradientInteraction version visit: 
-			// http://<your url>:8000/coloring/?type=gradient
+			// http://p2-paperjs-promputthisri-promputthisri499532.codeanyapp.com:3000/coloring/?type=gradient
 			// To see your myCustomInteraction version visit: 
-			// http://<your url>:8000/coloring/
+			// http://p2-paperjs-promputthisri-promputthisri499532.codeanyapp.com:3000/coloring/
 			var url = window.location.href;
 			if (url.indexOf("gradient") > -1) {
 				init(false);
