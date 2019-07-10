@@ -35,6 +35,16 @@
 		    margin-right: auto;
 		    display: block;
 		}
+    
+    #custom-color-palette {
+      width: 100%;
+      background-color: #f1f1f1;
+      display: flex;
+      flex-wrap: wrap;
+      position: absolute;
+      bottom: 10px;
+    }
+    
 	</style>
 
 	<script type="text/javascript" canvas="canvas">
@@ -66,10 +76,10 @@
         path.fillColor = 'red';
         path.selected = true;
         console.log('myGradientInteraction');
-				tool.onMouseDown = function(event) {
+				
+        tool.onMouseDown = function(event) {
           start = event.point;
 				}
-
 				tool.onMouseUp = function(event) {
           console.log([cp.history[cp.history.length-2], cp.history[cp.history.length-1]]);
           path.fillColor = {
@@ -105,11 +115,75 @@
 					$swatch.click(function(){
 						// add color to the color palette history
 					  	cp.history.push($(this).css("background-color"));
+              updateCustomCPOptions(color);
+              
 					});
 					cp.$container.append($swatch);
 				}
 			}
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      //custom color plate
+      var customCP = {
+				history: ["#000000"], // black selected by default
+				options: ["#000000"], // black added by default
+				$container: $('#custom-color-palette')
+			}
+      // creat a custom color palette with the given color
+      function createCustomColorsPalette(colors) {
+        // create a swatch for each colors
+        for (var i = customCP.options.length - 1; i >= 0; i--) {
+          console.log(customCP.options[i]);
+					var $swatch = $("<div>").css("background-color", customCP.options[i])
+									   .addClass("swatch");
+					$swatch.click(function(){
+						// add color to the color palette history
+					  	customCP.history.push($(this).css("background-color"));
+					});
+					customCP.$container.append($swatch);
+      }
+    }
+      function updateCustomCPOptions(color) {
+        var contain = false;
+        for (var i = 0; i <= (customCP.options.length - 1); i++) {
+          if (color = customCP.options.length[i]) {
+            contain = true;
+          }
+        }
+        if (!(contain)) {
+          customCP.options.add(color);
+          var $swatch = $("<div>").css("background-color", color)
+									   .addClass("swatch");
+        }
+      }
+      // loads a set of colors from a json to create a color palette
+			function getCustomColorsCreatePalette(){
+				customCP.$container.html(" ");
+				$.getJSON('/static/coloring/vendors/material/material-colors.json', function(colors){
+					var keys = Object.keys(colors);
+					createCustomColorsPalette(customCP.options);
+				});
+			}
 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 			// loads a set of colors from a json to create a color palette
 			function getColorsCreatePalette(){
 				cp.$container.html(" ");
@@ -126,6 +200,7 @@
         paper.install(window);
 				paper.setup(canvas);
 				getColorsCreatePalette();
+        getCustomColorsCreatePalette();
 
 				paper.project.importSVG(mandala.filePath, function(item) { 
 					mandala.item = item._children["design-freepik"];
@@ -157,5 +232,6 @@
 
 	<canvas id="myCanvas" width="750px" height="750px"></canvas>
 	<div id="color-palette"></div>
+  <div id="custom-color-palette"></div>
 </body>
 </html>
