@@ -114,14 +114,35 @@
 									   .addClass("swatch");
 					$swatch.click(function(){
 						// add color to the color palette history
-					  	cp.history.push($(this).css("background-color"));
-              updateCustomCPOptions(color);
+					  cp.history.push($(this).css("background-color"));
+            console.log($(this).css("background-color"));
+            var rgb = $(this).css("background-color").split("(")[1].split(")")[0].split(", ");
+            var colorHex = RGBToHex($(this).css("background-color"));
+            console.log(rgb);
+            console.log(colorHex);
+            updateCustomCPOptions(colorHex);
               
 					});
 					cp.$container.append($swatch);
 				}
 			}
       
+      function RGBToHex(rgb) {
+        // Choose correct separator
+        let sep = rgb.indexOf(",") > -1 ? "," : " ";
+        // Turn "rgb(r,g,b)" into [r,g,b]
+        rgb = rgb.substr(4).split(")")[0].split(sep);
+        let r = (+rgb[0]).toString(16),
+        g = (+rgb[1]).toString(16),
+        b = (+rgb[2]).toString(16);
+        if (r.length == 1)
+          r = "0" + r;
+        if (g.length == 1)
+          g = "0" + g;
+        if (b.length == 1)
+          b = "0" + b;
+        return "#" + r + g + b;
+     }
       
       
       
@@ -151,17 +172,41 @@
 					customCP.$container.append($swatch);
       }
     }
+      
+      function compareString(st1, st2) {
+        if (st1.length != st2.length) {
+          return false;
+            }
+        for (var i = 0; i <= st1.length; i++) {
+          if (st1.charAt(i) != st2.charAt(i)) {
+            return false;
+          }
+        } return true;
+      }
+      
+      //update function
       function updateCustomCPOptions(color) {
+        console.log(color);
         var contain = false;
         for (var i = 0; i <= (customCP.options.length - 1); i++) {
-          if (color = customCP.options.length[i]) {
+          console.log(customCP.options[i]);
+          if (compareString(color, customCP.options[i])) {
+            console.log("same");
             contain = true;
           }
         }
+        console.log(color);
         if (!(contain)) {
-          customCP.options.add(color);
+          customCP.options.push(color);
+          console.log(customCP.options);
+          console.log(customCP.options[1]);
           var $swatch = $("<div>").css("background-color", color)
 									   .addClass("swatch");
+          $swatch.click(function(){
+						// add color to the color palette history
+					  	customCP.history.push($(this).css("background-color"));
+					});
+					customCP.$container.append($swatch);
         }
       }
       // loads a set of colors from a json to create a color palette
