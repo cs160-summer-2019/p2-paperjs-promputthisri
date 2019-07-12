@@ -37,12 +37,34 @@
 		}
     
     #custom-color-palette {
-      width: 100%;
+      width:30%;
       background-color: #f1f1f1;
       display: flex;
-      flex-wrap: wrap;
-      position: absolute;
+      overflow: wrap;
+      position: relative;
       bottom: 10px;
+    }
+    
+    .dot {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    
+    #current-color {
+      background-color: #f1f1f1;
+    }
+    
+    .Row {
+      display: table;
+      width: 100%; /*Optional*/
+      table-layout: fixed; /*Optional*/
+      border-spacing: 10px; /*Optional*/
+    }
+    .Column {
+      display: table-cell;
+      background-color: #000000; /*Optional*/
     }
     
 	</style>
@@ -115,11 +137,8 @@
 					$swatch.click(function(){
 						// add color to the color palette history
 					  cp.history.push($(this).css("background-color"));
-            console.log($(this).css("background-color"));
             var rgb = $(this).css("background-color").split("(")[1].split(")")[0].split(", ");
             var colorHex = RGBToHex($(this).css("background-color"));
-            console.log(rgb);
-            console.log(colorHex);
             updateCustomCPOptions(colorHex);
               
 					});
@@ -145,9 +164,11 @@
      }
       
       
-      
-      
-      
+      // color palette
+			var currentColor = {
+				history: ["#000000"], // black selected by default
+				$container: $('#current-color')
+			}
       
       
       
@@ -162,7 +183,6 @@
       function createCustomColorsPalette(colors) {
         // create a swatch for each colors
         for (var i = customCP.options.length - 1; i >= 0; i--) {
-          console.log(customCP.options[i]);
 					var $swatch = $("<div>").css("background-color", customCP.options[i])
 									   .addClass("swatch");
 					$swatch.click(function(){
@@ -186,29 +206,33 @@
       
       //update function
       function updateCustomCPOptions(color) {
-        console.log(color);
         var contain = false;
         for (var i = 0; i <= (customCP.options.length - 1); i++) {
-          console.log(customCP.options[i]);
           if (compareString(color, customCP.options[i])) {
-            console.log("same");
             contain = true;
           }
         }
-        console.log(color);
         if (!(contain)) {
           customCP.options.push(color);
-          console.log(customCP.options);
-          console.log(customCP.options[1]);
           var $swatch = $("<div>").css("background-color", color)
 									   .addClass("swatch");
           $swatch.click(function(){
 						// add color to the color palette history
-					  	customCP.history.push($(this).css("background-color"));
+					  customCP.history.push($(this).css("background-color"));
+            currentColor.history.push($(this).css("background-color"));
+            updateCurrentColor(color);
 					});
 					customCP.$container.append($swatch);
         }
       }
+      
+      
+      //update current function
+      function updateCurrentColor(color) {
+        document.getElementById('current-color').style.background = color;
+      }
+      
+      
       // loads a set of colors from a json to create a color palette
 			function getCustomColorsCreatePalette(){
 				customCP.$container.html(" ");
@@ -220,12 +244,15 @@
 
         
         
-        
-        
-        
-        
-        
-        
+     
+      
+      
+      
+      
+      
+      
+      
+      
         
         
         
@@ -277,6 +304,16 @@
 
 	<canvas id="myCanvas" width="750px" height="750px"></canvas>
 	<div id="color-palette"></div>
-  <div id="custom-color-palette"></div>
+  
+  <div class="Row">
+    <div class="Column">
+      <div class= "Column" id="custom-color-palette"></div>
+    </div>
+    <div class="Column">
+      <div class="dot" id="current-color"></div>
+    </div>
+    <div class="Column">C3</div>
+</div>
+  
 </body>
 </html>
